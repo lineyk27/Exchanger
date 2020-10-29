@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace Exchanger.Web.Models
 {
-    public class ExchangeRateAPIResponse
+    public class ExchangeRate
     {
-        public Dictionary<string,float> Rates { get; set; }
+        public string ToCurrency { get; set; }
+        public string ToRate { get; set; }
         public string Base { get; set; }
         public DateTime Date { get; set; }
     }
