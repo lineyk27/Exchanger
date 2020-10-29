@@ -4,16 +4,17 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Diagnostics;
+using Exchanger.Web.Models;
 
 namespace Exchanger.Web.Services
 {
-    public class ExchangerRatesService : IExchangerRatesService
+    public class ExchangerRateService : IExchangerRatesService
     {
         private const string ExchangerAPIBasePath = "https://api.exchangeratesapi.io/latest";
 
         private readonly IHttpClientFactory _httpFactory;
-        public ExchangerRatesService(IHttpClientFactory httpFactory) => _httpFactory = httpFactory;
-        public async Task<decimal> GetExchangeRateAsync(string fromCurrency, string toCurrency)
+        public ExchangerRateService(IHttpClientFactory httpFactory) => _httpFactory = httpFactory;
+        public async Task<decimal> GetExchangeRateAsync(Currency fromCurrency, Currency toCurrency)
         {
             CheckCurrencyIsNormal(fromCurrency);
             CheckCurrencyIsNormal(toCurrency);
@@ -33,15 +34,15 @@ namespace Exchanger.Web.Services
 
                 var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
-                var rate = doc.RootElement.GetProperty("rates").GetProperty(toCurrency).GetDecimal();
+                var rate = doc.RootElement.GetProperty("rates").GetProperty(toCurrency.ToString()).GetDecimal();
 
                 return rate;
             }
         }
 
-        bool CheckCurrencyIsNormal(string currency)
+        bool CheckCurrencyIsNormal(Currency currency)
         {
-            return "USD,GBP,EUR,UAH".Contains(currency);
+            return "USD,GBP,EUR,CHF".Contains(currency.ToString());
         }
     }
 }

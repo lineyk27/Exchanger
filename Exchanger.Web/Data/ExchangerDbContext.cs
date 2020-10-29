@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Exchanger.Web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Exchanger.Web.Data
 {
@@ -21,6 +23,12 @@ namespace Exchanger.Web.Data
             builder.Entity<Exchange>().Property(e => e.FromAmount).HasColumnType("decimal(12,5)");
             builder.Entity<Exchange>().Property(e => e.FromCurrency).HasColumnType("varchar(3)");
             builder.Entity<Exchange>().Property(e => e.ToCurrency).HasColumnType("varchar(3)");
+            builder.Entity<Exchange>().Property(e => e.ToCurrency).HasConversion(
+                    v => v.ToString(),
+                    v => (Currency)Enum.Parse(typeof(Currency), v));
+            builder.Entity<Exchange>().Property(e => e.FromCurrency).HasConversion(
+                    v => v.ToString(),
+                    v => (Currency)Enum.Parse(typeof(Currency), v));
         }
 
     }

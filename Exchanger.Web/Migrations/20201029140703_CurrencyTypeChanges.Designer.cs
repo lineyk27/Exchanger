@@ -4,14 +4,16 @@ using Exchanger.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Exchanger.Web.Migrations
 {
     [DbContext(typeof(ExchangerDbContext))]
-    partial class ExchangerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201029140703_CurrencyTypeChanges")]
+    partial class CurrencyTypeChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
