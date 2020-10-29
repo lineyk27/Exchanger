@@ -30,7 +30,6 @@ namespace Exchanger.Web.Services
                 if (!response.IsSuccessStatusCode)
                     throw new Exception($"Something went wrong, status code: {response.StatusCode}");
 
-                Debug.WriteLine(await response.Content.ReadAsStringAsync());
 
                 var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 

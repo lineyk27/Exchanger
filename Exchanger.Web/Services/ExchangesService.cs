@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Linq;
 using Exchanger.Web.Data;
 using Exchanger.Web.Models;
 using Exchanger.Web.Services.Contracts;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Exchanger.Web.Services
 {
     public class ExchangesService : IExchangesService
     {
+        private const int PageSize = 20;
         private readonly ExchangerDbContext _db;
         private readonly IExchangerRatesService _ratesService;
 
@@ -42,7 +46,7 @@ namespace Exchanger.Web.Services
                 ToCurrency = exchanged.ToCurrency,
                 FromAmount = exchanged.FromAmount,
                 ToAmount = exchanged.ToAmount,
-                ToCurrencyRate = rate
+                ToCurrencyRate = exchanged.ToCurrencyRate
             };
 
 
@@ -57,18 +61,40 @@ namespace Exchanger.Web.Services
 
         private ExchangeResponse CalculateExchangeAmount(ExchangeRequest req, decimal rate)
         {
-            var resAmount = req.FromAmount * rate;
+            var resAmount = Math.Round(req.FromAmount * rate, 5);
 
             var resp = new ExchangeResponse()
             {
                 FromAmount = req.FromAmount,
                 FromCurrency = req.FromCurrency,
                 ToCurrency = req.ToCurrency,
-                ToCurrencyRate = rate,
+                ToCurrencyRate = Math.Round(rate, 5),
                 ToAmount = resAmount
             };
 
             return resp;
+        }
+
+        public async Task<IEnumerable<Exchange>> GetExchanges(GetHistory query)
+        {
+            var all = _db.ExchangesHistory.AsQueryable();
+
+            if (query.FromCurrency != null)
+                all = all.Where(x => x.FromCurrency == query.FromCurrency);
+
+            if (query.FromAmount != null)
+                all = all.Where(x => x.FromAmount == query.FromAmount);
+
+            if (query.ToCurrency != null)
+                all = all.Where(x => x.ToCurrency == query.ToCurrency);
+
+            if (query.ToAmount != null)
+                all = all.Where(x => x.ToAmount == query.ToAmount);
+
+            if (query.Date != null)
+                all = all.Where(x => x.Date.Date == ((DateTime)query.Date).Date);
+
+            return await all.Skip((query.Page - 1) * PageSize).Take(PageSize).ToListAsync();
         }
     }
 }

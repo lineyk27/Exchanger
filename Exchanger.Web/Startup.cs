@@ -1,14 +1,14 @@
-using Exchanger.Web.Data;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Exchanger.Web.Services;
 using Exchanger.Web.Services.Contracts;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Exchanger.Web.Data;
 
 namespace Exchanger.Web
 {
@@ -18,10 +18,7 @@ namespace Exchanger.Web
         public Startup(IConfiguration configuration) => _configuration = configuration;
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options =>
-                {
-                    options.EnableEndpointRouting = false;
-                })
+            services.AddControllers(options => options.EnableEndpointRouting = false)
                 .AddJsonOptions(configuration =>
                 {
                     configuration.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
