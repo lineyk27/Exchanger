@@ -32,7 +32,7 @@ namespace Exchanger.Web.Services
 
 
                 var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-
+                
                 var rate = doc.RootElement.GetProperty("rates").GetProperty(toCurrency.ToString()).GetDecimal();
 
                 return rate;

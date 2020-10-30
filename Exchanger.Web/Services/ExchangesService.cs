@@ -23,6 +23,7 @@ namespace Exchanger.Web.Services
         public async Task<ExchangeResponse> ExchangeMoney(ExchangeRequest exchangeReq)
         {
 
+
             var rate = await _ratesService.
                 GetExchangeRateAsync(exchangeReq.FromCurrency, exchangeReq.ToCurrency);
 
