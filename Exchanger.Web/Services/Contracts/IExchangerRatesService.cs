@@ -1,7 +1,10 @@
-﻿namespace Exchanger.Web.Services.Contracts
+﻿using Exchanger.Web.Models;
+using System.Threading.Tasks;
+
+namespace Exchanger.Web.Services.Contracts
 {
-    interface IExchangerRatesService
+    public interface IExchangerRatesService
     {
-        void GetExchangeRateForCurrency(string currency, float amount);
+        Task<decimal> GetExchangeRateAsync(Currency fromCurrency, Currency toCurrency);
     }
 }

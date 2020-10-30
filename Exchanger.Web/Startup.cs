@@ -1,26 +1,44 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Exchanger.Web.Services;
+using Exchanger.Web.Services.Contracts;
+using Exchanger.Web.Data;
 
 namespace Exchanger.Web
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+        public Startup(IConfiguration configuration) => _configuration = configuration;
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient("ExchangerRatesAPI", client => 
+            services.AddControllers(options => options.EnableEndpointRouting = false)
+                .AddJsonOptions(configuration =>
+                {
+                    configuration.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+            services.AddTransient<IExchangerRatesService, ExchangerRateService>();
+            services.AddTransient<IExchangesService, ExchangesService>();
+
+            services.AddHttpClient();
+            services.AddDbContext<ExchangerDbContext>(options =>
             {
-                client.BaseAddress = new Uri("https://api.exchangeratesapi.io/latest");
+                options.UseSqlServer(_configuration.GetConnectionString("MSSQLServer"));
+            });
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "../WebClient/build";
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -30,12 +48,21 @@ namespace Exchanger.Web
 
             app.UseRouting();
 
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
+                endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "../WebClient";
+                if (env.IsDevelopment())
                 {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
         }
     }
