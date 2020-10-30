@@ -109,45 +109,60 @@ class Exchanger extends React.Component<{},IState>{
         });
     }
     getRateLabel = () => {
-        return (<p>1 {this.state.displayFromCurrency} = {this.state.toCurrencyRate} {this.state.displayToCurrency}</p>)
+        return (<span>1 
+            {this.state.displayFromCurrency} = 
+            <span className="text-success">{this.state.toCurrencyRate}</span>{" "}
+            {this.state.displayToCurrency}</span>)
     }
     render(): React.ReactNode{
         return(
             <React.Fragment>
-                <div>
+                <div >
                     <p>{this.state.error}</p>
-                    <form onSubmit={this.handleSubmit}>
-                        <label> Amount
+                    <form onSubmit={this.handleSubmit} className="form-group">
+                        <div className="row justify-">
+                                <label htmlFor="from-amount-input" className="col-md-5"> Amount</label>
+                                <label htmlFor="to-amount-input" className="col-md">Converted to</label>
+                        </div>   
+                        <div className="row">
                             <input 
-                                type="text" 
-                                name="fromAmount"
-                                onChange={this.handleChange} 
-                                value={this.state.fromAmount} />
-                        </label>
-                        <select name="fromCurrency" onChange={this.handleSelect} value={this.state.fromCurrency}>
-                            {Object.values(Currency).map((val,ind) : React.ReactNode => <option value={val} key={ind}>{val}</option>)}
+                                    type="text" 
+                                    id="from-amount-input"
+                                    className="form-control col-md-3"
+                                    name="fromAmount"
+                                    onChange={this.handleChange} 
+                                    value={this.state.fromAmount} />
+                        <select name="fromCurrency" className="form-control col-md-1" 
+                                onChange={this.handleSelect} value={this.state.fromCurrency}>
+                                {Object.values(Currency).map((val,ind) : React.ReactNode => <option value={val} key={ind}>{val}</option>)}
                         </select>
-                        {
-                            <span>{this.state.exchangeDirection == ExchangeDirection.Normal ? "->" : "<-"}</span>
-                        }
-                        <label>
-                            Converted to
-                            <input 
+                        <span style={{fontSize: "25px", marginLeft: "20px",marginRight: "20px",}}>
+                            {this.state.exchangeDirection === ExchangeDirection.Normal ? "→" : "←"}
+                        </span>
+                        <input 
                                 type="text"
+                                id="to-amount-input"
+                                className="form-control col-md-2"
                                 name="toAmount" 
                                 onChange={this.handleChange} 
                                 value={this.state.toAmount}/>
-                        </label>
-                        <select name="toCurrency" onChange={this.handleSelect} value={this.state.toCurrency}>
+                        <select name="toCurrency"
+                            className="form-control col-md-1" 
+                            onChange={this.handleSelect} value={this.state.toCurrency}>
                             {Object.values(Currency).map((val,ind) : React.ReactNode => <option value={val} key={ind}>{val}</option>)}
                         </select>
-                        <button type="submit" >
-                            Exchange
-                        </button>
+                        </div>
+                        <div className="row justify-content-between align-items-center">
+                            <div className="col-md-3">
+                                {this.getRateLabel()}
+                            </div>
+                            <div className="col-md-3">
+                                <button type="submit" className="btn btn-success" >
+                                    Exchange
+                                </button>
+                            </div>
+                        </div>
                     </form>
-                    <div>
-                        {this.getRateLabel()}
-                    </div>
                 </div>
             </React.Fragment>
         );

@@ -79,20 +79,29 @@ namespace Exchanger.Web.Services
         {
             var all = _db.ExchangesHistory.AsQueryable();
 
-            if (query.FromCurrency != null)
-                all = all.Where(x => x.FromCurrency == query.FromCurrency);
+            if (query.FromCurrencies != null)
+                all = all.Where(x => ((IEnumerable<Currency>)query.FromCurrencies).Contains(x.FromCurrency));
 
-            if (query.FromAmount != null)
-                all = all.Where(x => x.FromAmount == query.FromAmount);
+            if (query.FromAmountLowerBound != null)
+                all = all.Where(x => x.FromAmount >= query.FromAmountLowerBound);
 
-            if (query.ToCurrency != null)
-                all = all.Where(x => x.ToCurrency == query.ToCurrency);
+            if (query.FromAmountUpperBound != null)
+                all = all.Where(x => x.FromAmount <= query.FromAmountUpperBound);
 
-            if (query.ToAmount != null)
-                all = all.Where(x => x.ToAmount == query.ToAmount);
+            if (query.ToCurrencies != null)
+                all = all.Where(x => ((IEnumerable<Currency>)query.ToCurrencies).Contains(x.ToCurrency));
 
-            if (query.Date != null)
-                all = all.Where(x => x.Date.Date == ((DateTime)query.Date).Date);
+            if (query.ToAmountLowerBound != null)
+                all = all.Where(x => x.ToAmount >= query.ToAmountLowerBound);
+
+            if (query.ToAmountUpperBound != null)
+                all = all.Where(x => x.ToAmount <= query.ToAmountUpperBound);
+
+            if (query.DateLowerBound != null)
+                all = all.Where(x => x.Date >= query.DateLowerBound);
+
+            if (query.DateUpperBound != null)
+                all = all.Where(x => x.Date <= query.DateUpperBound);
 
             return await all
                 .OrderByDescending(x => x.Date)

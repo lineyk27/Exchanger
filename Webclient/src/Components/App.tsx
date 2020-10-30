@@ -11,22 +11,24 @@ const HistoryRoute = "/history";
 
 function App() {
   return (
-    <div className="App">
-      <div id="picker">
-        <Link to={ExchangerRoute}>
-          Exchanger
-        </Link>{"  "}
-        <Link to={HistoryRoute}>
-          History
-        </Link>
-      </div>
-      <div id="main-content">
-        <Route path={ExchangerRoute} exact={true}>
-          <Exchanger />
-        </Route>
-        <Route path={HistoryRoute} exact={true}>
-          <History/>
-        </Route>
+    <div className="App row justify-content-center">
+      <div className="col-md-7">
+        <div className="">
+          <Link to={ExchangerRoute}>
+            <div className="btn btn-link" >Exchanger</div>
+          </Link>{"  "}
+          <Link to={HistoryRoute}>
+          <div className="btn btn-link" >History</div>
+          </Link>
+        </div>
+        <div id="main-content">
+          <Route path={ExchangerRoute} exact={true}>
+            <Exchanger />
+          </Route>
+          <Route path={HistoryRoute} exact={true}>
+            <History/>
+          </Route>
+        </div>
       </div>
     </div>
   );
