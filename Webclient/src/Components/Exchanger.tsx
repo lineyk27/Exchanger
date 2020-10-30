@@ -35,7 +35,9 @@ class Exchanger extends React.Component<{},IState>{
         }
         this.getExchange();
     }
-
+    hideError = () => {
+        this.setState({error: ""});
+    }
     getExchange = async () => {
         
         if(this.state.exchangeDirection === ExchangeDirection.Normal){
@@ -55,6 +57,7 @@ class Exchanger extends React.Component<{},IState>{
                     });
                 }).catch(error => {
                     console.log(error);
+                    this.setState({error: "Bad request"})
                 });
         }else{
             let model = {
@@ -73,12 +76,14 @@ class Exchanger extends React.Component<{},IState>{
                     });
                 }).catch(error => {
                     console.log(error);
+                    this.setState({error: "Bad request"})
                 });
         }
     }
 
     handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        this.hideError();
         console.log(this.state.exchangeDirection);
         this.setState((prevState) => {return{
             fromAmount: Number.parseFloat(prevState.fromAmount).toString(),
@@ -118,7 +123,11 @@ class Exchanger extends React.Component<{},IState>{
         return(
             <React.Fragment>
                 <div >
-                    <p>{this.state.error}</p>
+                    {this.state.error !== "" && 
+                        <div className="alert alert-danger" role="alert">
+                            {this.state.error}
+                        </div>
+                    }
                     <form onSubmit={this.handleSubmit} className="form-group">
                         <div className="row justify-">
                                 <label htmlFor="from-amount-input" className="col-md-5"> Amount</label>
