@@ -94,7 +94,11 @@ namespace Exchanger.Web.Services
             if (query.Date != null)
                 all = all.Where(x => x.Date.Date == ((DateTime)query.Date).Date);
 
-            return await all.Skip((query.Page - 1) * PageSize).Take(PageSize).ToListAsync();
+            return await all
+                .OrderByDescending(x => x.Date)
+                .Skip((query.Page - 1) * PageSize)
+                .Take(PageSize)
+                .ToListAsync();
         }
     }
 }
